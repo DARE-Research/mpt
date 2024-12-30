@@ -1,6 +1,5 @@
-use std::fmt;
 use alloy_primitives::hex;
-
+use core::fmt;
 
 #[derive(PartialEq, Eq, Clone)]
 pub struct LeafNode {
@@ -25,13 +24,13 @@ impl LeafNode {
     pub const fn new(key: u8, value: &[u8; 33]) -> Self {
         let value = *value;
         let key = Self::extract_key(key);
-        Self { key, value}
+        Self { key, value }
     }
 
     /// Extracts a nibble (4 bits) from the key based on the flag.
     /// This assumes your computer is little endian
     pub const fn extract_key(key: u8) -> u8 {
-            // Extract lower nibble
-            key & 0x0F
+        // Extract lower nibble
+        key & 0x0F
     }
 }

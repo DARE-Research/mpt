@@ -1,8 +1,6 @@
-use core::fmt;
-
-use alloy_primitives::{hex, B256};
 use crate::rlp::RlpNodes;
-
+use alloy_primitives::{hex, B256};
+use core::fmt;
 
 /// An extension node in an Ethereum Merkle Patricia Trie.
 ///
@@ -24,7 +22,7 @@ pub struct ExtensionNode {
 impl fmt::Debug for ExtensionNode {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut debug_struct = f.debug_struct("ExtensionNode");
-        
+
         debug_struct
             .field("key", &format!("0x{:02X}", self.key))
             .field("upper_nibble", &self.get_upper_nibble())
@@ -39,9 +37,6 @@ impl fmt::Debug for ExtensionNode {
         debug_struct.finish()
     }
 }
-
-
-
 
 impl ExtensionNode {
     /// Creates a new extension node with the given key and a pointer to the child.
@@ -61,7 +56,6 @@ impl ExtensionNode {
             (key & 0x0F, true)
         }
     }
-
 
     /// Gets the upper nibble (first 4 bits) of the key.
     pub fn get_upper_nibble(&self) -> u8 {
@@ -83,8 +77,8 @@ impl ExtensionNode {
 
     /// Gets the hash of the child node if it's stored as a hash.
     pub fn child_hash(&self) -> Option<B256> {
-       self.child.as_hash()
-    } 
+        self.child.as_hash()
+    }
 }
 
 #[cfg(test)]
@@ -95,7 +89,7 @@ mod tests {
     fn test_extension_node_creation() {
         let child = RlpNodes::from_raw(&[0x01, 0x02, 0x03]).unwrap();
         let node = ExtensionNode::new(0xAB, child.clone());
-        
+
         assert_eq!(node.key, 0xAB);
         assert_eq!(node.child, child);
         assert_eq!(node.get_upper_nibble(), 0xA);
@@ -107,7 +101,7 @@ mod tests {
         let (upper, more_after_upper) = ExtensionNode::extract_key(0xAB, true);
         assert_eq!(upper, 0xA);
         assert!(!more_after_upper);
-        
+
         let (lower, more_after_lower) = ExtensionNode::extract_key(0xAB, false);
         assert_eq!(lower, 0xB);
         assert!(more_after_lower);
@@ -118,13 +112,13 @@ mod tests {
         let small_child = RlpNodes::from_raw(&[0x01, 0x02, 0x03]).unwrap();
         let small_node = ExtensionNode::new(0xAB, small_child);
         assert!(!small_node.has_hashed_child());
-    
+
         // Hash node (proper RLP format)
         let mut hash_data = [0u8; 33];
         // RLP prefix for hash
-        hash_data[0] = 0x80; 
-        hash_data[1..33].copy_from_slice(&[0x42; 32]); 
-        
+        hash_data[0] = 0x80;
+        hash_data[1..33].copy_from_slice(&[0x42; 32]);
+
         let hash_child = RlpNodes::from_raw(&hash_data).unwrap();
         let hash_node = ExtensionNode::new(0xCD, hash_child);
         assert!(hash_node.has_hashed_child());

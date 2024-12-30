@@ -7,7 +7,8 @@ use core::fmt;
 /// Uses byte-sized indices for alignment and performance, even though only
 /// nibble (4-bit) values are valid indices.
 pub struct BranchNode {
-    // 16 potential children, one for each hex digi, this should be nibble but for allignment issues and performance 1 byte
+    // 16 potential children, one for each hex digi, this should be nibble but for allignment
+    // issues and performance 1 byte
     children: [Vec<RlpNodes>; 16],
 
     value: Option<Vec<u8>>,

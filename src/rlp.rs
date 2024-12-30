@@ -1,7 +1,6 @@
 // Portions of this code are adapted from Alloy Trie
 // Source: https://github.com/alloy-trie
 
-
 use alloy_primitives::{hex, keccak256, B256};
 use core::fmt;
 
@@ -12,7 +11,6 @@ const MAX: usize = 33;
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 
 pub struct RlpNodes([u8; MAX]);
-
 
 impl core::ops::Deref for RlpNodes {
     type Target = [u8];
@@ -51,7 +49,7 @@ impl RlpNodes {
     pub fn from_raw(data: &[u8]) -> Option<Self> {
         let mut arr = [0u8; MAX];
         let len = data.len();
-        for i in 0..len { 
+        for i in 0..len {
             arr[i] = data[i];
         }
         Some(Self(arr))
@@ -81,7 +79,7 @@ impl RlpNodes {
         let mut arr = [0u8; MAX];
         let slice = word.as_slice();
         let len = slice.len();
-        for i in 0..len { 
+        for i in 0..len {
             arr[i] = slice[i];
         }
         Self(arr)
@@ -104,10 +102,10 @@ impl RlpNodes {
     }
 }
 
+#[cfg(test)]
 mod test {
-    use crate::rlp::RlpNodes;
+    use super::*;
 
-   
     #[test]
     fn test_hash() {
         println!("Size of Abstraction: {}", std::mem::size_of::<RlpNodes>());

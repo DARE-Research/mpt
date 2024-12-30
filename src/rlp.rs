@@ -2,7 +2,7 @@
 // Source: https://github.com/alloy-trie
 
 use alloy_primitives::{hex, keccak256, B256};
-use core::fmt;
+use core::{fmt, ptr};
 
 const MAX: usize = 33;
 
@@ -46,13 +46,16 @@ impl RlpNodes {
     ///
     /// Returns `None` if the data is too large (greater than 33 bytes).
     #[inline]
-    pub fn from_raw(data: &[u8]) -> Option<Self> {
-        let mut arr = [0u8; MAX];
-        let len = data.len();
-        for i in 0..len {
-            arr[i] = data[i];
+    pub const fn from_raw(src: &[u8]) -> Option<Self> {
+        if src.len() <= MAX {
+            let mut dst = [0u8; MAX];
+            unsafe {
+                ptr::copy_nonoverlapping(src.as_ptr(), dst.as_mut_ptr(), src.len());
+            }
+            Some(Self(dst))
+        } else {
+            None
         }
-        Some(Self(arr))
     }
 
     /// Creates a new RLP-encoded node from the given data.
